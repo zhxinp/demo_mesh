@@ -1,0 +1,13 @@
+syntax = "proto3" ;
+
+service ResourceSource {
+    rpc EstablishResourceStream(stream )
+}
+
+message RequestResources{
+
+}
+
+message Resources{
+
+}

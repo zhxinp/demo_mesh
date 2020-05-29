@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+service AggregatedDiscoveryService {
+    rpc StreamAggregatedResources(stream DiscoveryRequest) returns (stream DiscoveryResponse) ;
+}
+
+
+message DiscoveryRequest{
+    string TypeUrl = 1 ;
+    string discoveryrequest = 2;
+    string VersionInfo = 3;
+
+}
+
+
+message DiscoveryResponse{
+    string discoveryresponse = 1;
+
+}
+

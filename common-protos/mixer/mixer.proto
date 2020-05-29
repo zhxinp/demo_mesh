@@ -1,0 +1,150 @@
+
+
+syntax = "proto3";
+
+//istio.io/api/mixer/v1/mixer.proto
+//protoc -I .  mixer/mixer.proto --go_out=plugins=grpc:.
+service Mixer {
+    //在操作前检查前置条件和限额分配
+    rpc Check (CheckRequest) returns (CheckResponse) {
+    }
+    //报告遥测数据
+    rpc Report (ReportRequest) returns (ReportResponse) {
+    }
+}
+
+message CheckRequest {
+    message QuotaParams{
+        string name = 1;
+        //分配的限额数量
+        int64 amount = 2;
+        //当为true时，支持返回比请求数量少的quota
+        bool best_effort = 3;
+    }
+    //传入需要的变量
+    CompressedAttributes attributes = 1;
+    //每个限额分配的情况
+    repeated QuotaParams quotas = 2;
+}
+message CompressedAttributes {
+    map<string,string> strings = 1;
+    map<string,StringMap> stringMaps = 2;
+}
+
+message StringMap {
+    map<string,string> keyValue = 1;
+}
+message Status {
+    string code = 1;  //因yaml.unmashel无法处理 code = 0的状况，改为字符串类型
+    string message = 2;
+}
+message CheckResponse{
+    message PreconditionResult {
+        //status返回码是"OK"，则表明前置条件检查通过，其他表明不通过
+        Status status = 1;
+        //结果有效的秒数
+        int64 duration = 2;
+        //引用的属性
+        ReferencedAttributes referenced_attributes = 3;
+
+    }
+    message QuotaResult {
+        string name = 1;
+        //status返回码是"OK"，则表已经有得到限额分配的结果
+        Status status = 2;
+        //分配的限额数量
+        int64 granted_amount =3;
+        //结果有效的秒数
+        int64 duration = 4;
+        //引用的属性
+        ReferencedAttributes referenced_attributes = 5;
+    }
+
+    PreconditionResult precondition = 1;
+    repeated QuotaResult quotas = 2;
+
+
+}
+
+message ReportRequest{
+    //传入需要的变量
+    CompressedAttributes attributes = 1;
+}
+
+message ReportResponse{
+
+}
+
+
+message ReferencedAttributes {
+
+    //此属性是源于Check Request传到服务器端的attributes，所以不需要有值
+    message AttributeMatch {
+       string name = 1;
+       Condition condition = 2;
+    }
+
+    repeated AttributeMatch attribute_matches = 1;
+}
+
+//状态码
+enum Code {
+    // HTTP 状态码: 200 OK
+    OK = 0;
+
+    // HTTP 状态码: 499 客户端关闭请求
+    CANCELLED = 1;
+
+    // HTTP 状态码: 500 内部服务器错误
+    UNKNOWN = 2;
+
+    // HTTP 状态码: 400 糟糕的请求
+    INVALID_ARGUMENT = 3;
+
+    // HTTP 状态码: 504 网关超时
+    DEADLINE_EXCEEDED = 4;
+
+    // HTTP 状态码: 404 没有找到
+    NOT_FOUND = 5;
+
+    // HTTP 状态码: 409 冲突
+    ALREADY_EXISTS = 6;
+
+    // HTTP 状态码: 403 禁止
+    PERMISSION_DENIED = 7;
+
+    // HTTP 状态码: 429 过多的请求
+    RESOURCE_EXHAUSTED = 8;
+
+    // HTTP 状态码: 400 遭到的请求
+    FAILED_PRECONDITION = 9;
+
+    // HTTP 状态码: 409 冲突
+    ABORTED = 10;
+
+    // HTTP 状态码: 400 糟糕的请求
+    OUT_OF_RANGE = 11;
+
+    // HTTP 状态码: 501 没有实现
+    UNIMPLEMENTED = 12;
+
+    // HTTP 状态码: 500 内部服务器错误
+    INTERNAL = 13;
+
+    // HTTP 状态码: 503 服务不可用
+    UNAVAILABLE = 14;
+
+    // HTTP 状态码: 500 内部服务器错误
+    DATA_LOSS = 15;
+
+    // HTTP 状态码: 401 权限不足
+    UNAUTHENTICATED = 16;
+}
+
+
+//属性匹配的状况
+enum Condition {
+    CONDITION_UNSPECIFIED = 0;    // 不会被使用
+    ABSENCE = 1;                  // 属性不存在
+    EXACT = 2;                    // 属性值匹配
+}
