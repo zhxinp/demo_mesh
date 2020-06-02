@@ -1,0 +1,57 @@
+{
+  "disablePolicyChecks": true,
+  "proxyListenPort": 15001,
+  "connectTimeout": "10s",
+  "protocolDetectionTimeout": "0.100s",
+  "ingressClass": "bar",
+  "ingressService": "istio-ingressgateway",
+  "ingressControllerMode": "STRICT",
+  "enableTracing": true,
+  "accessLogFile": "/dev/stdout",
+  "defaultConfig": {
+    "configPath": "/etc/istio/proxy",
+    "binaryPath": "/usr/local/bin/envoy",
+    "serviceCluster": "istio-proxy",
+    "drainDuration": "45s",
+    "parentShutdownDuration": "60s",
+    "discoveryAddress": "istio-pilot:15010",
+    "connectTimeout": "10s",
+    "proxyAdminPort": 15000,
+    "statNameLength": 189,
+    "envoyAccessLogService": {
+
+    },
+    "envoyMetricsService": {
+
+    },
+    "statusPort": 15020
+  },
+  "outboundTrafficPolicy": {
+    "mode": "ALLOW_ANY"
+  },
+  "enableAutoMtls": false,
+  "trustDomain": "cluster.local",
+  "trustDomainAliases": [
+  ],
+  "defaultServiceExportTo": [
+    "*"
+  ],
+  "defaultVirtualServiceExportTo": [
+    "*"
+  ],
+  "defaultDestinationRuleExportTo": [
+    "*"
+  ],
+  "rootNamespace": "istio-system",
+  "localityLbSetting": {
+
+  },
+  "dnsRefreshRate": "5s",
+  "reportBatchMaxEntries": 100,
+  "reportBatchMaxTime": "1s",
+  "certificates": [
+  ],
+  "thriftConfig": {
+
+  }
+}

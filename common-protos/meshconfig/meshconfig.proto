@@ -1,0 +1,37 @@
+
+syntax = "proto3";
+
+
+message MeshConfig {
+    //policy check的服务器名称
+    string mixer_check_server = 1;
+    //report遥测数据的服务器名称
+    string mixer_report_server = 2;
+    //Envoy监听其他服务的端口
+    int32 proxy_listen_port = 3;
+    //ingress服务的名称
+    string ingress_service = 4;
+    //访问日志路径
+    string access_log_file = 5;
+    //代理配置
+    ProxyConfig default_config = 6;
+    //可信任的域名
+    string trust_domain = 7;
+    //根命名空间
+    string root_namespace = 8;
+}
+
+message ProxyConfig {
+    //配置路径
+    string config_path = 1;
+    //可执行文件路径
+    string binary_path = 2;
+    //服务发现地址
+    string discovery_address = 3;
+    //代理管理端口
+    int32 proxy_admin_port = 4;
+    //bootstrap模板路径
+    string proxy_bootstrap_template_path = 5;
+    //状态端口，一般用于健康检查
+    int32 status_port = 6;
+}
